@@ -1,0 +1,19 @@
+name: "ci"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  # unit tests
+  units:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: semver
+      uses: ./
+      with:
+        value: v100.40.38
+        pattern: "{major}.{minor}"

@@ -1,0 +1,36 @@
+name: unit-test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - id: today
+        uses: actions-matrix/today@v1
+      - id: release
+        uses: actions-matrix/release-matrix-action@v1
+        with:
+          search: "nginx"
+          date: ${{ steps.today.outputs.year }}
+      - name: semver
+        id: semver
+        uses: ./
+        with:
+          value: ${{ steps.release.outputs.version }}
+          pattern: "{major}.{minor}"
+    outputs:
+      version: ${{ steps.semver.outputs.version }}
+
+  build:
+    runs-on: ubuntu-latest
+    needs: generate
+    strategy:
+      matrix:
+        version: ${{ fromJson(needs.generate.outputs.version) }}
+    steps:
+      - run: echo "Build ${{ matrix.version }}"

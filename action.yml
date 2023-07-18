@@ -1,0 +1,19 @@
+name: "semver"
+description: "A small utility to extract SemVer version information"
+branding:
+  icon: "tag"
+  color: "white"
+
+inputs:
+  value:
+    description: "The value to extract the version from. e.g: v1.2.3, 1.2.3"
+    required: true
+  pattern:
+    description: "The pattern to use to extract the version. e.g: {version} or {major}.{minor}.{patch}"
+    required: true
+outputs:
+  version:
+    description: "The extracted version"
+runs:
+  using: "node16"
+  main: 'dist/index.js'

@@ -22,24 +22,54 @@ const setOutput = (name, value) => {
  */
 async function run() {
     try {
-        const value = core.getInput('value')
+        let value = core.getInput('value')
         const pattern = core.getInput('pattern')
 
+        try {
+            value = JSON.parse(value)
+        } catch {}
+
         console.log(`Input value: ${value}`)
+        console.log(`Input value type: ${typeof value}`)
         console.log(`Input pattern: ${pattern}`)
 
-        if (semver.valid(value) === null) {
+        if (Array.isArray(value)) {
+            const versions = value.map((element) => {
+                return parseVersion(element, pattern)
+            })
+
+            const set = new Set(versions)
+
+            setOutput('version', [...set])
+            return
+        } else if (typeof value === 'string') {
+            const version = parseVersion(value, pattern)
+
+            setOutput('version', version)
+            return
+        } else {
             throw new Error(`The input value ${value} is not a valid SemVer`)
         }
+    } catch (error) {
+        core.error(error)
+    }
+}
 
-        const extracted = semver.parse(semver.clean(value))
+function parseVersion(value, pattern) {
+    if (semver.valid(value) === null) {
+        throw new Error(`The input value ${value} is not a valid SemVer`)
+    }
 
-        if (pattern === '{version}') {
-            setOutput('version', value)
-            return
-        }
+    const extracted = semver.parse(semver.clean(value))
 
-        const version = pattern.split('.').map((element) => {
+    if (pattern === '{version}') {
+        setOutput('version', value)
+        return
+    }
+
+    const version = pattern
+        .split('.')
+        .map((element) => {
             switch (element) {
                 case '{version}':
                     return value
@@ -53,11 +83,9 @@ async function run() {
                     return element
             }
         })
+        .join('.')
 
-        setOutput('version', version.join('.'))
-    } catch (error) {
-        core.error(error)
-    }
+    return version
 }
 
 run()

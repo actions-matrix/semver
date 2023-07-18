@@ -45,7 +45,7 @@ async function run() {
 
             const set = new Set(versions)
 
-            setOutput('version', [...set])
+            setOutput('version', JSON.stringify([...set]))
             return
         } else if (typeof value === 'string') {
             const version = parseVersion(value, pattern)

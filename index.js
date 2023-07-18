@@ -29,7 +29,12 @@ async function run() {
             value = JSON.parse(value)
         } catch {}
 
-        console.log(`Input value: ${value}`)
+        if (Array.isArray(value)) {
+            console.log(`Input value: ${JSON.stringify(value)}`)
+        } else {
+            console.log(`Input value: ${value}`)
+        }
+
         console.log(`Input value type: ${typeof value}`)
         console.log(`Input pattern: ${pattern}`)
 

@@ -94,7 +94,7 @@ function parseVersion(value, pattern) {
         })
 
     if (semver.valid(version) === null) {
-        core.warning(`The output value "${version}" is not a valid SemVer`)
+        core.info(`[NOTE]: The output value "${version}" is not a valid SemVer`)
     }
 
     return version

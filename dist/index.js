@@ -3546,7 +3546,12 @@ async function run() {
         let value = core.getInput('value')
         const pattern = core.getInput('pattern')
 
+        // If contains comma, split the value to array
+        if (value.includes(',')) value = value.split(/[, \n\r]/).filter(Boolean)
+
         try {
+            // Try to parse the value as JSON
+            // If it is an array, it will be parsed as array
             value = JSON.parse(value)
         } catch {}
 
@@ -3602,8 +3607,7 @@ function parseVersion(value, pattern) {
     const extracted = semver.parse(semver.clean(value))
 
     if (pattern === '{version}') {
-        setOutput('version', value)
-        return
+        return value
     }
 
     let version = pattern

@@ -39,5 +39,31 @@ jobs:
       - run: echo "Build ${{ matrix.version }}"
 ```
 
+**Example**
+
+Given the input value of `1.2.3` and the pattern of the following:
+
+```sh
+# {version}
+1.2.3
+# {major}
+1
+# {major}.{minor}
+1.2
+# {major}.{minor}.{patch} (same as {version})
+1.2.3
+# {major}{minor}{patch}
+123
+```
+
+## Inputs
+
+- `value` - The value to extract the version from supports **single value** or **comma separated** list or **JSON array stringified**.
+- `pattern` - The pattern to extract the version with, supported keywords `{version}` or `{major}.{minor}.{patch}`.
+
+## Outputs
+
+- `version` - The extracted version
+
 ## License
 Licensed under the [MIT License](./LICENSE).

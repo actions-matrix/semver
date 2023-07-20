@@ -26,7 +26,7 @@ async function run() {
         const pattern = core.getInput('pattern')
 
         // If contains comma, split the value to array
-        if (value.includes(',')) value = value.split(/[, \n\r]/).filter(Boolean)
+        if (value.includes(',')) value = value.split(/[, \r\n]/).filter(Boolean)
 
         try {
             // Try to parse the value as JSON

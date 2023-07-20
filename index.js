@@ -60,9 +60,22 @@ async function run() {
     }
 }
 
+const patterns = {
+    version: '{version}',
+    major: '{major}',
+    minor: '{minor}',
+    patch: '{patch}'
+}
+
+/**
+ * Parse version based on the pattern
+ * @param {string} value 
+ * @param {string} pattern 
+ * @returns 
+ */
 function parseVersion(value, pattern) {
     if (semver.valid(value) === null) {
-        throw new Error(`The input value ${value} is not a valid SemVer`)
+        throw new Error(`The input value "${value}" is not a valid SemVer`)
     }
 
     const extracted = semver.parse(semver.clean(value))
@@ -72,23 +85,17 @@ function parseVersion(value, pattern) {
         return
     }
 
-    const version = pattern
-        .split('.')
-        .map((element) => {
-            switch (element) {
-                case '{version}':
-                    return value
-                case '{major}':
-                    return extracted.major
-                case '{minor}':
-                    return extracted.minor
-                case '{patch}':
-                    return extracted.patch
-                default:
-                    return element
-            }
+    let version = pattern
+
+    Object
+        .keys(patterns)
+        .forEach((key) => {
+            version = version.replace(patterns[key], extracted[key])
         })
-        .join('.')
+
+    if (semver.valid(version) === null) {
+        core.warning(`The output value "${version}" is not a valid SemVer`)
+    }
 
     return version
 }
